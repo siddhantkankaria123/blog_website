@@ -12,6 +12,7 @@
   letter-spacing: 5px;
 }
 .navbar-nav li a:hover {
+  width: fit-content;
   color: #1abc9c !important;
   border-bottom: 1px solid #1abc9c;
 }
@@ -35,6 +36,11 @@
   flex-direction: column;
   gap: 1rem;
 }
+.contact-button {
+  padding-bottom: 5%;
+  display: flex;
+  justify-content: center;
+}
 .link {
   width: fit-content;
   color: lightseagreen;
@@ -43,6 +49,23 @@
 }
 .link:hover {
   color: blue !important;
+}
+.forms {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1%;
+}
+.contact-input {
+  outline: none;
+  width: 100%;
+  padding: 2%;
+  background-color: #fff;
+  border: 2px solid;
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: black;
+  font-size: 1.5rem;
 }
 .footer-padding {
   padding-bottom: 60px;
@@ -54,6 +77,9 @@
 }
 button {
   margin-top: 1%;
+}
+.thanks {
+  color: blue;
 }
 .footer {
   position: absolute;

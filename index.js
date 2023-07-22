@@ -2,12 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 var _ = require("lodash");
+const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use(express.static("images"));
 
 const posts = [];
 let x = "";
@@ -33,6 +33,33 @@ app.get("/about", function (req, res) {
 app.get("/contact", function (req, res) {
   res.render("contact", { contactPageContent: contactContent });
 });
+app.post("/contact", function (req, res) {
+  var name = req.body.Name;
+  var email = req.body.email;
+  var message = req.body.message;
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "siddhantkankaria122@gmail.com",
+      pass: "lstidijkqjjmcauw",
+    },
+  });
+  var mailoptions = {
+    from: req.body.email,
+    to: "siddhantkankaria122@gmail.com",
+    subject: "Hello",
+    text: `Name:${name} \nMessage: ${req.body.message}`,
+  };
+  transporter.sendMail(mailoptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.render("thanks");
+      console.log("email sent" + info.response);
+    }
+  });
+});
+
 app.get("/compose", function (req, res) {
   res.render("compose");
 });
