@@ -3,14 +3,24 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 var _ = require("lodash");
 const nodemailer = require("nodemailer");
+const mongoose = require("mongoose");
 
+mongoose
+  .connect("mongodb://127.0.0.1:27017/blogDB", { useNewUrlParser: true })
+  .then(console.log("connected to mongodb server"));
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-const posts = [];
-let x = "";
+const postSchema = new mongoose.Schema({
+  title: { type: String },
+  post: { type: String },
+});
+
+const Post = mongoose.model("Post", postSchema);
+
+const x = "";
 const homeStartingContent =
   "Explore a world of inspiration and self-expression. Read captivating stories and insightful reflections carefully curated by our team. Feel inspired? Share your voice in our Compose section! Publish your thoughts, creative pieces, or heartfelt messages with the world. Unleash your creativity, connect with others, and become part of our growing community! Happy journaling!";
 const aboutContent =
@@ -19,7 +29,19 @@ const aboutcontentone =
   "I am deeply interested in Web Development, finding joy in the creative process of crafting impactful and user-friendly websites.";
 const contactContent = "Contact No: 9352132617";
 app.get("/", function (req, res) {
-  res.render("home", { startingContent: homeStartingContent, posts: posts });
+  const readPost = async () => {
+    try {
+      const Getpost = await Post.find();
+      // console.log(Getpost);
+      res.render("home", {
+        startingContent: homeStartingContent,
+        posts: Getpost,
+      });
+    } catch {
+      console.log("error in getting post");
+    }
+  };
+  readPost();
 
   // console.log(posts);
 });
@@ -65,19 +87,43 @@ app.get("/compose", function (req, res) {
 });
 app.post("/compose", function (req, res) {
   const post = { Title: req.body.postTitle, content: req.body.postBody };
-  posts.push(post);
+
+  const newPost = Post({
+    title: post.Title,
+    post: post.content,
+  });
+  newPost.save();
   res.redirect("/");
 });
 // express routing parameters
-app.get("/posts/:postName", function (req, res) {
-  x = _.lowerCase(req.params.postName);
-  for (let j = 0; j < posts.length; j++) {
-    if (_.lowerCase(posts[j].Title) === x) {
-      res.render("post", { givenTitle: x, contents: posts[j].content });
+app.get("/posts/:postId", function (req, res) {
+  const requestedPostId = req.params.postId;
+  console.log(requestedPostId);
+  const readPost = async () => {
+    try {
+      const Gets = await Post.findOne({ _id: requestedPostId });
+      console.log(typeof Gets);
+      res.render("post", {
+        givenTitle: Gets.title,
+        contents: Gets.post,
+      });
+    } catch {
+      console.log("error in getting post");
     }
-  }
+  };
+  readPost();
 });
-
-app.listen(8000, function () {
-  console.log("8000 server running");
+app.post("/delete", function (req, res) {
+  const deletePostid = req.body.checkbox;
+  Post.findByIdAndDelete(deletePostid)
+    .then(() => {
+      console.log("deleted");
+    })
+    .catch(() => {
+      console.log(err);
+    });
+  res.redirect("/");
+});
+app.listen(10000, function () {
+  console.log("10000 server running");
 });
