@@ -124,6 +124,6 @@ app.post("/delete", function (req, res) {
     });
   res.redirect("/");
 });
-app.listen(10000, function () {
-  console.log("10000 server running");
+app.listen(8010, function () {
+  console.log("8010 server running");
 });
