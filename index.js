@@ -6,7 +6,12 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/blogDB", { useNewUrlParser: true })
+  .connect(
+    "mongodb+srv://siddhantkankaria:siddhant@dailyjournal.2nojxt4.mongodb.net/blogDB",
+    {
+      useNewUrlParser: true,
+    }
+  )
   .then(console.log("connected to mongodb server"));
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -124,6 +129,6 @@ app.post("/delete", function (req, res) {
     });
   res.redirect("/");
 });
-app.listen(8010, function () {
-  console.log("8010 server running");
+app.listen(5000, function () {
+  console.log("5000 server running");
 });
